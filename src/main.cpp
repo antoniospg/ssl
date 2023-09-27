@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "Lex.h"
+#include "Syntax.h"
 
 typedef std::string string;
 
@@ -30,11 +31,12 @@ bool run(string src) {
   Lexer *scan = new Lexer(src);
   scan->getTokens();
   err &= scan->err;
+
+  Syntax *syntax = new Syntax(scan->tokens);
+  err &= syntax->err;
+
   if (err)
     return true;
-
-  for (auto tok : scan->tokens)
-    std::cout << tok.show_val() << std::endl;
 
   return err;
 }
