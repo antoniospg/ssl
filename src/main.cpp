@@ -12,8 +12,7 @@ typedef std::string string;
 
 static string readAllBytes(char const *filename) {
   std::ifstream ifs(filename, std::ios::binary | std::ios::ate);
-  if (!ifs.good())
-    exit(66);
+  if (!ifs.good()) exit(66);
 
   std::ifstream::pos_type pos = ifs.tellg();
 
@@ -35,8 +34,7 @@ bool run(string src) {
   Syntax *syntax = new Syntax(scan->tokens);
   err &= syntax->err;
 
-  if (err)
-    return true;
+  if (err) return true;
 
   return err;
 }
@@ -62,8 +60,7 @@ int runFile(const string &path) {
   string src = readAllBytes(path.data());
   bool err = run(src);
 
-  if (err)
-    exit(65);
+  if (err) exit(65);
 
   return 0;
 }

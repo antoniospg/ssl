@@ -24,6 +24,7 @@ enum TokenType {
   IF,
   INTEGER,
   OF,
+  RETURN,
   STRING,
   STRUCT,
   TRUE,
@@ -67,22 +68,26 @@ enum TokenType {
 };
 
 class Token {
-public:
+ public:
   int line;
   TokenType type;
   string lexeme;
   Obj literal;
   int snd_token;
+  int const_idx;
 
-  Token(TokenType type, string lexeme, Obj literal, int line, int snd_token = -1);
+  Token(TokenType type, string lexeme, Obj literal, int line,
+        int snd_token = -1, int const_idx = -1);
   string show_val();
 };
 
 class Lexer {
-public:
+ public:
   std::vector<Token> tokens;
   std::unordered_map<string, int> snd_tokens;
+  std::unordered_map<string, int> constants;
   int last_snd_token = -1;
+  int last_const = -1;
   bool err;
 
   Lexer(string src);
@@ -103,7 +108,7 @@ public:
   void addToken(TokenType type, string literal);
   void error(int line, string message);
 
-private:
+ private:
   string src;
   uint start, current, line;
   std::map<string, TokenType> keywords;

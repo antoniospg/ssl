@@ -23,7 +23,7 @@ def gen_parser_tables(path):
     aux_c = len(aux_table[0])
 
     file.write(
-"""
+        """
 #ifndef PARSER_TABLES_H
 #define PARSER_TABLES_H
 
@@ -36,11 +36,11 @@ def gen_parser_tables(path):
     file.write("typedef enum {")
     for tok in all_toks:
         new_tok = str.upper(tok[0])
-        if new_tok == '$END':
-            new_tok = 'UNKNOWN'
+        if new_tok == "$END":
+            new_tok = "UNKNOWN"
 
-        file.write("{}, ".format(new_tok))
-    file.write("} markers;\n")
+        file.write("_{}, ".format(new_tok))
+    file.write("} non_term;\n")
 
     file.write(
         """
@@ -67,7 +67,15 @@ static int aux[{}][{}] = {{
     )
 
     for rule in aux_table:
-        file.write("\t{{ {}, {} }},\n".format(rule[1], str.upper(rule[2])))
+        file.write("\t{{ {}, _{} }},\n".format(rule[1], str.upper(rule[2])))
+    file.write("};\n\n")
+
+    file.write("enum RuleSign {\n")
+    rule_nos = {}
+    for rule in aux_table:
+        rule_no = rule_nos.get(rule[2], 0)
+        rule_nos[rule[2]] = rule_no + 1
+        file.write("\tR_{}_{},\n".format(str.upper(rule[2]), rule_no))
 
     file.write(
         """

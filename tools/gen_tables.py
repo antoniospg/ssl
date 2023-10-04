@@ -30,6 +30,7 @@ tokens = [
     "IF",
     "INTEGER",
     "OF",
+    "RETURN",
     "STRING",
     "STRUCT",
     "TRUE",
@@ -95,7 +96,7 @@ def p_t(p):
 
 
 def p_dt(p):
-    """dt : TYPE idd EQUALS ARRAY LEFT_SQUARE NUMERAL RIGHT_SQUARE OF t
+    """dt : TYPE idd EQUALS ARRAY LEFT_SQUARE num RIGHT_SQUARE OF t
     | TYPE idd EQUALS STRUCT nb LEFT_BRACES dc RIGHT_BRACES
     | TYPE idd EQUALS t
     """
@@ -144,15 +145,35 @@ def p_li(p):
 
 
 def p_s(p):
-    """s : IF LEFT_PARENTHESIS e RIGHT_PARENTHESIS mt s
-    | IF LEFT_PARENTHESIS e RIGHT_PARENTHESIS mt s ELSE me s
+    """s : IF LEFT_PARENTHESIS e RIGHT_PARENTHESIS mt s ELSE me s
+    | IF LEFT_PARENTHESIS e RIGHT_PARENTHESIS mt s
     | WHILE mw LEFT_PARENTHESIS e RIGHT_PARENTHESIS mt s
     | DO mw s WHILE LEFT_PARENTHESIS e RIGHT_PARENTHESIS SEMI_COLON
     | nb b
     | lv EQUALS e SEMI_COLON
     | BREAK SEMI_COLON
     | CONTINUE SEMI_COLON
+    | RETURN e SEMI_COLON
     """
+
+
+# def p_s(p):
+#    """s : u
+#    | m
+#    """
+# def p_m(p):
+#    """m : IF LEFT_PARENTHESIS e RIGHT_PARENTHESIS mt m ELSE me u
+#    | WHILE mw LEFT_PARENTHESIS e RIGHT_PARENTHESIS mt m
+#    | DO mw m WHILE LEFT_PARENTHESIS e RIGHT_PARENTHESIS SEMI_COLON
+#    | nb b
+#    | lv EQUALS e SEMI_COLON
+#    | BREAK SEMI_COLON
+#    | CONTINUE SEMI_COLON
+#    """
+# def p_u(p):
+#    """u : IF LEFT_PARENTHESIS e RIGHT_PARENTHESIS mt m ELSE me s
+#    | IF LEFT_PARENTHESIS e RIGHT_PARENTHESIS mt s
+#    """
 
 
 def p_e(p):
@@ -197,11 +218,11 @@ def p_f(p):
     | idu mc LEFT_PARENTHESIS le RIGHT_PARENTHESIS
     | MINUS f
     | NOT f
-    | TRUE
-    | FALSE
-    | CHARACTER
-    | STRINGVAL
-    | NUMERAL
+    | true
+    | false
+    | c
+    | str
+    | num
     """
 
 
@@ -216,6 +237,26 @@ def p_lv(p):
     | lv LEFT_SQUARE e RIGHT_SQUARE
     | idu
     """
+
+
+def p_true(p):
+    """true : TRUE"""
+
+
+def p_false(p):
+    """false : FALSE"""
+
+
+def p_c(p):
+    """c : CHARACTER"""
+
+
+def p_str(p):
+    """str : STRINGVAL"""
+
+
+def p_num(p):
+    """num : NUMERAL"""
 
 
 def p_idd(p):
@@ -286,11 +327,10 @@ for idx, rule in enumerate(productions):
         continue
     aux += [[idx, rule.len, rule.str.split(" ")[0]]]
 
-#print(all_tokens[54])
-#print(at_f[6-1][49])
-#print(aux[72])
+# print(at_f[6-1][49])
+# print(aux[72])
 
-#for r, line in enumerate(at_f):
+# for r, line in enumerate(at_f):
 #    for tok, el in enumerate(line):
 #        if el != 0:
 #            print("[{}, {}] = ".format(r, all_tokens[tok]), el)

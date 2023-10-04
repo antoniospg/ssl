@@ -29,7 +29,7 @@ CC_FLAGS=-c         \
          -ansi      \
          -g      \
          -pedantic \
-				 -std=c++17
+				 -std=c++20
 
 # Python linter
 PYLINT=pylint

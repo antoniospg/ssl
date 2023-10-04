@@ -11,12 +11,13 @@ std::map<TokenType, string> tok_to_string;
 // ----------------------------------------
 // Token function definitions
 Token::Token(TokenType type, string lexeme, Obj literal, int line,
-             int snd_token)
+             int snd_token, int const_idx)
     : type(type),
       lexeme(lexeme),
       line(line),
       literal(literal),
-      snd_token(snd_token) {}
+      snd_token(snd_token),
+      const_idx(const_idx) {}
 
 string Token::show_val() {
   return string("type: '" + tok_to_string[type] +
@@ -40,6 +41,7 @@ Lexer::Lexer(string src) : err(false), src(src), start(0), current(0), line(1) {
   keywords["if"] = IF;
   keywords["integer"] = INTEGER;
   keywords["of"] = OF;
+  keywords["return"] = RETURN;
   keywords["string"] = STRING;
   keywords["struct"] = STRUCT;
   keywords["true"] = TRUE;
@@ -60,6 +62,7 @@ Lexer::Lexer(string src) : err(false), src(src), start(0), current(0), line(1) {
   tok_to_string[IF] = "IF";
   tok_to_string[INTEGER] = "INTEGER";
   tok_to_string[OF] = "OF";
+  tok_to_string[RETURN] = "RETURN";
   tok_to_string[STRING] = "STRING";
   tok_to_string[STRUCT] = "STRUCT";
   tok_to_string[TRUE] = "TRUE";
@@ -160,6 +163,13 @@ void Lexer::addToken(TokenType type, string literal) {
 
     tokens.push_back(Token(type, src.substr(start, current - start), value,
                            line, snd_tokens[literal]));
+  } else if (type == STRINGVAL || type == CHARACTER || type == NUMERAL) {
+    // if (constants.find(literal) == constants.end())
+    //   constants[literal] = ++last_const;
+    constants[literal] = ++last_const;
+
+    tokens.push_back(Token(type, src.substr(start, current - start), value,
+                           line, -1, constants[literal]));
   } else {
     tokens.push_back(
         Token(type, src.substr(start, current - start), value, line));
